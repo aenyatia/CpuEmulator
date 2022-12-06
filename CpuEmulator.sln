@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CpuEmulator.Core", "CpuEmulator.Core\CpuEmulator.Core.csproj", "{4FC2D45A-B80A-4576-BE1F-A6B3DAEACD16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CpuEmulator.Tests", "CpuEmulator.Tests\CpuEmulator.Tests.csproj", "{71E5E1D2-C3FB-4D84-9FFC-368CA5CE4E5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4FC2D45A-B80A-4576-BE1F-A6B3DAEACD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FC2D45A-B80A-4576-BE1F-A6B3DAEACD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FC2D45A-B80A-4576-BE1F-A6B3DAEACD16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71E5E1D2-C3FB-4D84-9FFC-368CA5CE4E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71E5E1D2-C3FB-4D84-9FFC-368CA5CE4E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71E5E1D2-C3FB-4D84-9FFC-368CA5CE4E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71E5E1D2-C3FB-4D84-9FFC-368CA5CE4E5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
