@@ -14,12 +14,14 @@ public class Cpu
     private const byte StackTop = 0xFF;
     private const byte StackBot = 0x00;
 
-    public byte A { get; private set; }
-    public byte X { get; private set; }
-    public byte Y { get; private set; }
-    public byte SR { get; private set; }
-    public byte SP { get; private set; }
-    public ushort PC { get; private set; }
+    private byte _cycles;
+
+    public byte A { get; internal set; }
+    public byte X { get; internal set; }
+    public byte Y { get; internal set; }
+    public byte SR { get; internal set; }
+    public byte SP { get; internal set; }
+    public ushort PC { get; internal set; }
 
     public Cpu(IMemory memory,
         byte a = 0x00,
@@ -40,24 +42,93 @@ public class Cpu
         PC = pc;
     }
 
-    private byte ReadByte(ushort address)
+    public void Run()
+    {
+        if (_cycles == 0)
+        {
+            // fetch
+
+            // decode
+
+            // execute
+        }
+
+        _cycles--;
+    }
+
+    public void Reset()
+    {
+        var lowByte = ReadByte(RstVectorL);
+        var highByte = ReadByte(RstVectorH);
+
+        PC = CreateAddress(lowByte, highByte);
+
+        A = 0x00;
+        X = 0x00;
+        Y = 0x00;
+
+        SP = 0xFD;
+        SR = 0x00;
+
+        _cycles = 8;
+    }
+
+    public void Irq()
+    {
+        if (!GetFlag(Flag.I)) return;
+
+        StackPush(HighByte(PC));
+        StackPush(LowByte(PC));
+
+        SetFlag(Flag.B, false);
+        SetFlag(Flag.R, true);
+        SetFlag(Flag.I, true);
+
+        StackPush(SR);
+
+        var lowByte = ReadByte(IrqVectorL);
+        var highByte = ReadByte(IrqVectorH);
+
+        PC = CreateAddress(lowByte, highByte);
+
+        _cycles = 7;
+    }
+
+    public void Nmi()
+    {
+        StackPush(HighByte(PC));
+        StackPush(LowByte(PC));
+
+        SetFlag(Flag.B, false);
+        SetFlag(Flag.R, true);
+        SetFlag(Flag.I, true);
+
+        StackPush(SR);
+
+        var lowByte = ReadByte(NmiVectorL);
+        var highByte = ReadByte(NmiVectorH);
+
+        PC = CreateAddress(lowByte, highByte);
+
+        _cycles = 8;
+    }
+
+    internal byte ReadByte(ushort address)
     {
         return _memory.ReadByte(address);
     }
-
-    private void WriteByte(ushort address, byte value)
+    internal void WriteByte(ushort address, byte value)
     {
         _memory.WriteByte(address, value);
     }
 
-    private void StackPush(byte value)
+    internal void StackPush(byte value)
     {
         WriteByte((ushort)(0x0100 + SP), value);
         if (SP == StackBot) SP = StackTop;
         else SP--;
     }
-
-    private byte StackPop()
+    internal byte StackPop()
     {
         if (SP == StackTop) SP = StackBot;
         else SP++;
@@ -65,14 +136,26 @@ public class Cpu
         return ReadByte((ushort)(0x0100 + SP));
     }
 
-    private void SetFlag(Flag flag, bool value)
+    internal void SetFlag(Flag flag, bool value)
     {
         if (value) SR |= (byte)flag;
         else SR &= (byte)~flag;
     }
-
-    private bool GetFlag(Flag flag)
+    internal bool GetFlag(Flag flag)
     {
         return (SR & (byte)flag) != 0x00;
+    }
+
+    private static ushort CreateAddress(byte lowByte, byte highByte)
+    {
+        return (ushort)((highByte << 8) | lowByte);
+    }
+    private static byte HighByte(ushort address)
+    {
+        return (byte)((address >> 8) & 0x00FF);
+    }
+    private static byte LowByte(ushort address)
+    {
+        return (byte)(address & 0x00FF);
     }
 }

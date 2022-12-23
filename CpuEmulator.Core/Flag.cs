@@ -1,6 +1,6 @@
 ﻿namespace CpuEmulator.Core;
 
-public enum Flag
+internal enum Flag
 {
     C = 1 << 0,
     Z = 1 << 1,
